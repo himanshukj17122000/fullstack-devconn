@@ -145,9 +145,9 @@ router.put('/unlike/:id', auth, async (req, res) => {
     }
 })
 
-//@route POST api/posts
+//@route POST api/comment/:id
 //@access private
-router.post('/', [auth, [
+router.post('/comment/:id', [auth, [
     check('text', 'Text is required').not().isEmpty()
 
 ]], async (req, res) => {
@@ -160,18 +160,49 @@ router.post('/', [auth, [
 
     try {
         const user = await User.findById(req.user.id).select('-password')
-        const newPost = new Post({
+        const post = await Post.findById(req.params.id)
+        const newComment = {
             text: req.body.text,
             name: user.name,
             avatar: user.avatar,
             user: req.user.id
-        })
-
-        const post = await newPost.save()
+        }
+        post.comments.unshift(newComment)
+        await post.save()
         res.json(post)
     } catch (error) {
         console.error(error.message)
         res.status(500).send('Server Error')
     }
 })
+
+
+//@route DELETE api/comment/:id/:comment_id
+//@access private
+
+router.delete('/comment/:id/:comment_id', auth, async (req, res) => {
+
+    try {
+        const post = await Post.findById(req.params.id)
+        const newComment = post.comments.find(comment => comment.id === req.params.comment_id)
+        if (!newComment) {
+            return res.status(404).json({
+                msg: 'Comment not found'
+            })
+        }
+        if (newComment.user.toString() !== req.user.id) {
+            return res.status(401).json({
+                msg: 'User not authorized'
+            })
+        }
+        const removeIndex = await post.comments.map(comment => comment.user.toString()).indexOf(req.params.comment_id)
+        post.comments.splice(removeIndex, 1)
+        await post.save()
+        res.json(post.comments)
+    } catch (error) {
+        console.error(error.message)
+        res.status(500).send('Server Error')
+    }
+})
+
 module.exports = router
