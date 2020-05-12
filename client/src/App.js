@@ -13,7 +13,9 @@ import Landing from './components/layout/Landing';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Alert from './components/layout/Alert';
+import Dashboard from './components/dashboard/Dashboard'
 import setAuthToken from '../src/utils/setAuthToken'
+import PrivateRoutes from './components/routing/PrivateRoutes'
 import {
   loadUser
 } from './actions/auth'
@@ -64,6 +66,11 @@ const App = () => {
     Route exact path = '/login'
     component = {
       Login
+    }
+    />  <
+    PrivateRoutes exact path = '/dashboard'
+    component = {
+      Dashboard
     }
     /> < /
     Switch > {
