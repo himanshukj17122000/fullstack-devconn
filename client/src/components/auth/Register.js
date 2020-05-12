@@ -3,7 +3,8 @@ import React, {
   useState
 } from 'react';
 import {
-  Link
+  Link,
+  Redirect
 } from 'react-router-dom';
 import {
   connect
@@ -19,7 +20,8 @@ import {
 // import axios from 'axios'
 const Register = ({
   setAlert,
-  register
+  register,
+  isAuthenticated
 }) => {
   const [formData, setformData] = useState({
     name: '',
@@ -67,6 +69,10 @@ const Register = ({
     password,
     password2
   } = formData;
+
+  if (isAuthenticated) {
+    return <Redirect to = "/dashboard" / > ;
+  }
   return ( <
     Fragment >
     <
@@ -169,9 +175,13 @@ const Register = ({
 Register.propTypes = {
   setAlert: PropTypes.func.isRequired,
   register: PropTypes.func.isRequired,
-
+  isAuthenticated: PropTypes.bool
 };
-export default connect(null, {
+
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated
+});
+export default connect(mapStateToProps, {
   setAlert,
   register
 })(Register);
