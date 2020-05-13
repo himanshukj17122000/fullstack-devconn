@@ -4,6 +4,9 @@ import React, {
 import PropTypes from 'prop-types';
 import Moment from 'react-moment';
 import moment from 'moment'
+import {
+    deleteEducation
+} from '../../actions/profile'
 
 import {
     connect
@@ -11,7 +14,8 @@ import {
 
 
 const Education = ({
-    education
+    education,
+    deleteEducation
 }) => {
     const educations = education.map(edu => ( <
         tr key = {
@@ -38,7 +42,10 @@ const Education = ({
         /td> <
         td >
         <
-        button className = "btn btn-danger" >
+        button onClick = {
+            () => deleteEducation(edu._id)
+        }
+        className = "btn btn-danger" >
         Delete <
         /button> < /
         td > <
@@ -71,7 +78,10 @@ const Education = ({
 };
 
 Education.propTypes = {
-    education: PropTypes.array.isRequired
+    education: PropTypes.array.isRequired,
+    deleteEducation: PropTypes.func.isRequired,
 };
 
-export default Education;
+export default connect(null, {
+    deleteEducation
+})(Education);
