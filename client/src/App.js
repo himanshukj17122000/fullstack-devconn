@@ -18,6 +18,9 @@ import setAuthToken from '../src/utils/setAuthToken';
 import PrivateRoutes from './components/routing/PrivateRoutes';
 import CreateProfile from './components/profile-forms/CreateProfile'
 import EditProfile from './components/profile-forms/EditProfile'
+import AddExperience from './components/profile-forms/AddExperience'
+import AddEducation from './components/profile-forms/AddEducation'
+
 
 import {
   loadUser
@@ -84,7 +87,20 @@ const App = () => {
     component = {
       EditProfile
     }
-    /> < /
+    />  <
+    PrivateRoutes exact path = '/add-experience'
+    component = {
+      AddExperience
+    }
+    />   <
+    PrivateRoutes exact path = '/add-education'
+    component = {
+      AddEducation
+    }
+    />
+
+    <
+    /
     Switch > {
       ' '
     } <
