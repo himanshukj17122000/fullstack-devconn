@@ -12,6 +12,7 @@ import {
 import {
   connect
 } from 'react-redux'
+import DashboardActions from './DashboardActions'
 import Spinner from '../layout/Spinner'
 const Dashboard = ({
     getCurrentProfile,
@@ -33,7 +34,7 @@ const Dashboard = ({
     i className = "fas fa-user" / > Welcome {
       user && user.name
     } < /p> {
-    profile !== null ? < Fragment > Has < /Fragment>: <Fragment><p>You have not yet setup a profile, please add some info</p >
+    profile !== null ? < Fragment > < DashboardActions / > < /Fragment>: <Fragment><p>You have not yet setup a profile, please add some info</p >
       <
       Link to = "/create-profile"
     className = "btn btn-primary my-1" >
