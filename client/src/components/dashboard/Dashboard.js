@@ -14,6 +14,8 @@ import {
 } from 'react-redux'
 import DashboardActions from './DashboardActions'
 import Spinner from '../layout/Spinner'
+import Education from './Education'
+import Experiences from './Experiences'
 const Dashboard = ({
     getCurrentProfile,
     auth: {
@@ -34,9 +36,11 @@ const Dashboard = ({
     i className = "fas fa-user" / > Welcome {
       user && user.name
     } < /p> {
-    profile !== null ? < Fragment > < DashboardActions / > < /Fragment>: <Fragment><p>You have not yet setup a profile, please add some info</p >
-      <
-      Link to = "/create-profile"
+    profile !== null ? < Fragment > < DashboardActions / > < Education education = {
+      profile.education
+    }
+    /> <Experiences experience={profile.experience}/ > < /Fragment >: < Fragment > < p > You have not yet setup a profile, please add some info < /p > <
+    Link to = "/create-profile"
     className = "btn btn-primary my-1" >
       Create Profile <
       /Link></Fragment >
