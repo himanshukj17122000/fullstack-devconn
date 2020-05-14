@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Spinner from '../layout/Spinner';
 import { Link } from 'react-router-dom';
 import { getProfileById } from '../../actions/profile';
+import ProfileTop from './ProfileTop';
 const Profile = ({
   getProfileById,
   match,
@@ -12,7 +13,7 @@ const Profile = ({
 }) => {
   useEffect(() => {
     getProfileById(match.params.id);
-  }, [getProfileById]);
+  }, [getProfileById, match.params.id]);
   return (
     <Fragment>
       {profile === null || loading ? (
@@ -30,6 +31,9 @@ const Profile = ({
                 Edit Profile
               </Link>
             )}
+          <div className='profile-grid my-1'>
+            <ProfileTop profile={profile}></ProfileTop>
+          </div>
         </Fragment>
       )}
     </Fragment>
