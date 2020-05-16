@@ -68,7 +68,7 @@ const App = () => {
                 component={AddEducation}
               />{' '}
               <PrivateRoutes exact path='/posts' component={Posts} />{' '}
-              <PrivateRoutes exact path='/post/:id' component={Post} />{' '}
+              <PrivateRoutes exact path='/posts/:id' component={Post} />{' '}
             </Switch>{' '}
           </section>{' '}
         </Fragment>{' '}
