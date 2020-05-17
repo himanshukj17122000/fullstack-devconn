@@ -6,7 +6,10 @@ const Profile = require('../../../models/Profile')
 const User = require('../../../models/User')
 const request = require('request')
 const Post = require('../../../models/Post')
-
+const {
+    sendEmail,
+    cancelEmail
+} = require('../../emails/accounts')
 const {
     check,
     validationResult
@@ -173,6 +176,7 @@ router.delete('/', auth, async (req, res) => {
         res.json({
             msg: 'User Removed'
         })
+        cancelEmail(req.user.email, req.user.name)
     } catch (err) {
         console.error(err.message)
         res.status(500).send('Server Error')

@@ -9,7 +9,10 @@ const {
     validationResult
 } = require('express-validator')
 const router = express.Router()
-
+const {
+    sendEmail,
+    cancelEmail
+} = require('../../emails/accounts')
 //@route POST api/users
 //@access public
 router.post('/', [
@@ -63,7 +66,7 @@ router.post('/', [
         const salt = await bcrypt.genSalt(10)
         user.password = await bcrypt.hash(password, salt)
         await user.save()
-
+        sendEmail(user.email, user.name)
         //return jsonwebtoken
         const payload = {
             user: {
