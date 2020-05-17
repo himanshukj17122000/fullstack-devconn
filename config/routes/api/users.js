@@ -9,8 +9,7 @@ const {
 } = require('express-validator')
 const router = express.Router()
 const {
-    sendEmail,
-    cancelEmail
+    sendEmail
 } = require('../../emails/accounts')
 //@route POST api/users
 //@access public
