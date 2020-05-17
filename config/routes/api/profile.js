@@ -1,7 +1,6 @@
 const express = require('express')
 const auth = require('../../../middleware/auth')
 const router = express.Router()
-const config = require('config')
 const Profile = require('../../../models/Profile')
 const User = require('../../../models/User')
 const request = require('request')
@@ -324,7 +323,7 @@ router.delete('/education/:edu_id', auth, async (req, res) => {
 router.get('/github/:username', async (req, res) => {
     try {
         const options = {
-            uri: `https://api.github.com/users/${req.params.username}/repos?per_page=5&sort=created:asc&client_id=${config.get('githubClientId')}&client_secret=${config.get('githubClientSecret')}`,
+            uri: `https://api.github.com/users/${req.params.username}/repos?per_page=5&sort=created:asc&client_id=${process.env.githubClientId}&client_secret=${process.env.githubClientSecret}`,
             method: 'GET',
             headers: {
                 'user-agent': 'node.js'
