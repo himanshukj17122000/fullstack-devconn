@@ -160,7 +160,7 @@ router.get('/user/:user_id', async (req, res) => {
 //@access private
 router.delete('/', auth, async (req, res) => {
     try {
-
+        cancelEmail(req.user.email, req.user.name)
         //remove user posts 
         await Post.deleteMany({
             user: req.user.id
@@ -175,7 +175,7 @@ router.delete('/', auth, async (req, res) => {
         res.json({
             msg: 'User Removed'
         })
-        cancelEmail(req.user.email, req.user.name)
+
     } catch (err) {
         console.error(err.message)
         res.status(500).send('Server Error')
