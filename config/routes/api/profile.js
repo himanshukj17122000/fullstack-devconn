@@ -159,7 +159,8 @@ router.get('/user/:user_id', async (req, res) => {
 //@access private
 router.delete('/', auth, async (req, res) => {
     try {
-        cancelEmail(req.user.email, req.user.name);
+        const user = await User.findById(req.user.id)
+        cancelEmail(user.email, user.name);
         //remove user posts
         await Post.deleteMany({
             user: req.user.id,
