@@ -7,7 +7,7 @@
     "start": "node server",
     "server": "nodemon server",
     "client": "npm start --prefix client",
-    "dev": "env-cmd -f ./config/dev.env concurrently \"npm run server\" \"npm run client\"",
+    "dev": "env-cmd -f ./config/dev.env ./client/dev.env concurrently \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
   "author": "Himanshu Jain",
@@ -19,6 +19,7 @@
     "env-cmd": "^10.1.0",
     "express": "^4.17.1",
     "express-validator": "^6.4.1",
+    "firebase": "^7.14.4",
     "gravatar": "^1.8.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.12",

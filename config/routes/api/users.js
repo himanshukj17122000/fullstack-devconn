@@ -102,49 +102,70 @@ router.post(
     }
 );
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '/uploads/'));
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + file.originalname);
-    },
-});
+// const storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//         cb(null, path.join(__dirname, '/uploads/'));
+//     },
+//     filename: function (req, file, cb) {
+//         cb(null, Date.now() + file.originalname);
+//     },
+// });
 
-const fileFilter = (req, file, cb) => {
-    if (!file.originalname.match(/\.(png|jpg|jpeg)$/)) {
-        return cb(null, false);
-    }
-    return cb(null, true);
-};
+// const fileFilter = (req, file, cb) => {
+//     if (!file.originalname.match(/\.(png|jpg|jpeg)$/)) {
+//         return cb(null, false);
+//     }
+//     return cb(null, true);
+// };
 
-const upload = multer({
-    storage: storage,
-    limits: {
-        fileSize: 1024 * 1024 * 5,
-    },
-    fileFilter: fileFilter,
-});
+// const upload = multer({
+//     storage: storage,
+//     limits: {
+//         fileSize: 1024 * 1024 * 5,
+//     },
+//     fileFilter: fileFilter,
+// });
 
-/* 
-    stores image in uploads folder
-    using multer and creates a reference to the 
-    file
+// /* 
+//     stores image in uploads folder
+//     using multer and creates a reference to the 
+//     file
+// */
+// router
+//     .route('/avatar')
+//     .put(upload.single('imageData'), auth, async (req, res, next) => {
+//         const avatar = req.file.path
+
+//     try {
+//         const user = await User.findById(req.user.id);
+//         user.avatar = avatar;
+//         await user.save();
+//         res.json(user);
+//     } catch (error) {
+//         console.error(error.message);
+//         res.status(500).send('Server Error');
+//     }
+// });
+
+/*
+    upload image in base64 format, thereby,
+    directly storing it in mongodb datanase
+    along with images uploaded using firebase
+    storage
 */
-router
-    .route('/avatar')
-    .put(upload.single('imageData'), auth, async (req, res, next) => {
-        const avatar = req.file.path
-
+router.route("/avatar")
+    .put(auth, async (req, res, next) => {
         try {
             const user = await User.findById(req.user.id);
-            user.avatar = avatar;
+            user.avatar = req.body.avatar;
             await user.save();
             res.json(user);
         } catch (error) {
             console.error(error.message);
             res.status(500).send('Server Error');
+            next(error)
         }
     });
+
 
 module.exports = router;

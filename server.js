@@ -18,7 +18,7 @@ app.use('/api/users', require('./config/routes/api/users'))
 app.use('/api/profile', require('./config/routes/api/profile'))
 app.use('/api/posts', require('./config/routes/api/posts'))
 app.use('/api/auth', require('./config/routes/api/auth'))
-app.use(express.static(__dirname));
+// app.use('/uploads', express.static('config/routes/api/uploads'));
 
 
 // Serve static assets in production

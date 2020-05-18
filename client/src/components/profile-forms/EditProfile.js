@@ -3,11 +3,16 @@ import PropTypes from 'prop-types';
 import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { createProfile, getCurrentProfile } from '../../actions/profile';
+import { loadUser } from '../../actions/auth';
+import { storage } from '../../firebase-config';
+import axios from 'axios';
 const EditProfile = ({
   createProfile,
   getCurrentProfile,
   profile: { profile, loading },
   history,
+  loadUser,
+  auth,
 }) => {
   const [formData, setFormData] = useState({
     company: '',
@@ -22,11 +27,13 @@ const EditProfile = ({
     linkedin: '',
     youtube: '',
     instagram: '',
+    avatar: '',
   });
 
   const [displaySocialInputs, toggleSocialInputs] = useState(false);
   useEffect(() => {
     getCurrentProfile();
+    loadUser();
     setFormData({
       company: loading || !profile.company ? '' : profile.company,
       website: loading || !profile.website ? '' : profile.website,
@@ -41,6 +48,7 @@ const EditProfile = ({
       linkedin: loading || !profile.social ? '' : profile.social.linkedin,
       youtube: loading || !profile.social ? '' : profile.social.youtube,
       instagram: loading || !profile.social ? '' : profile.social.instagram,
+      avatar: loading || !auth.user.avatar ? '' : auth.user.avatar,
     });
   }, [loading, getCurrentProfile]);
   const {
@@ -56,6 +64,7 @@ const EditProfile = ({
     linkedin,
     youtube,
     instagram,
+    avatar,
   } = formData;
 
   const onChange = e =>
@@ -63,6 +72,50 @@ const EditProfile = ({
       ...formData,
       [e.target.name]: e.target.value,
     });
+
+  const handlePicture = e => {
+    let currentImageName = 'firebase-image-' + Date.now();
+
+    let uploadImage = storage
+      .ref(`images/${currentImageName}`)
+      .put(e.target.files[0]);
+
+    uploadImage.on(
+      'state_changed',
+      snapshot => {},
+      error => {
+        alert(error);
+      },
+      () => {
+        storage
+          .ref('images')
+          .child(currentImageName)
+          .getDownloadURL()
+          .then(url => {
+            let imageObj = {};
+            // store image object in the database
+            imageObj = {
+              avatar: url,
+            };
+
+            axios
+              .put(`api/users/avatar`, imageObj)
+              .then(data => {
+                if (data.data.success) {
+                  alert(
+                    'Image has been successfully uploaded using firebase storage'
+                  );
+                  this.setDefaultImage('firebase');
+                }
+              })
+              .catch(err => {
+                alert('Error while uploading image using firebase storage');
+                this.setDefaultImage('firebase');
+              });
+          });
+      }
+    );
+  };
 
   const onSubmit = e => {
     e.preventDefault();
@@ -92,6 +145,15 @@ const EditProfile = ({
           <small className='form-text'>
             Give us an idea of where you are at in your career{' '}
           </small>{' '}
+        </div>{' '}
+        <div className='form-group'>
+          <input
+            type='file'
+            placeholder='Avatar'
+            name='avatar'
+            onChange={e => handlePicture(e)}
+          />{' '}
+          <small className='form-text'>Choose your profile picture</small>{' '}
         </div>{' '}
         <div className='form-group'>
           <input
@@ -243,11 +305,14 @@ EditProfile.propTypes = {
   createProfile: PropTypes.func.isRequired,
   getCurrentProfile: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
+  loadUser: PropTypes.func.isRequired,
 };
 const mapStateToProps = state => ({
   profile: state.profile,
+  auth: state.auth,
 });
 export default connect(mapStateToProps, {
   createProfile,
   getCurrentProfile,
+  loadUser,
 })(withRouter(EditProfile));

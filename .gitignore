@@ -3,3 +3,4 @@ config/default.json
 .vscode
 config/production.json
 config/dev.env
+client/dev.env
