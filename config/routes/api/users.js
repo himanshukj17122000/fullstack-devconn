@@ -3,6 +3,7 @@ const User = require('../../../models/User')
 const gravatar = require('gravatar')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
+const auth = require('../../../middleware/auth')
 const {
     check,
     validationResult
@@ -86,6 +87,27 @@ router.post('/', [
     }
 
 
+})
+
+
+
+//@route PUT api/avatar
+//@access private
+router.put('/avatar', auth, async (req, res) => {
+    const {
+        avatar
+    } = req.body
+
+    try {
+        const user = await User.findById(req.user.id)
+
+        user.avatar = avatar
+        await user.save()
+        res.json(user)
+    } catch (error) {
+        console.error(error.message)
+        res.status(500).send('Server Error')
+    }
 })
 
 module.exports = router
