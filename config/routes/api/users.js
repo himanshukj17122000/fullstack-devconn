@@ -14,6 +14,17 @@ const router = express.Router();
 const {
     sendEmail
 } = require('../../emails/accounts');
+var nodemailer = require('nodemailer');
+var transporter = nodemailer.createTransport({
+    service: 'gmail', //process.env.SERVICE_PROVIDER,
+    auth: {
+        user: 'devconnecthkj@gmail.com',
+        pass: process.env.PASSWORD
+    }
+});
+
+
+
 const path = require('path');
 //@route POST api/users
 //@access public
@@ -75,7 +86,21 @@ router.post(
             const salt = await bcrypt.genSalt(10);
             user.password = await bcrypt.hash(password, salt);
             await user.save();
-            sendEmail(user.email, user.name);
+            console.log(process.env.SENDER)
+            // sendEmail(user.email, user.name);
+            const mailOptions = {
+                from: 'devconnecthkj@gmail.com', // sender address
+                to: user.email, // list of receivers
+                subject: 'Thanks for joining in!', // Subject line
+                html: `<p>Welcome to the app, ${user.name}! Let me know how you get along with the app. </p>`, // plain text body
+                replyTo: 'devconnecthkj@gmail.com'
+            };
+            transporter.sendMail(mailOptions, function (err, info) {
+                if (err)
+                    console.log(err)
+                else
+                    console.log(info);
+            });
             //return jsonwebtoken
             const payload = {
                 user: {

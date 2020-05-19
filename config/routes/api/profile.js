@@ -12,6 +12,16 @@ const {
     check,
     validationResult
 } = require('express-validator');
+var nodemailer = require('nodemailer');
+var transporter = nodemailer.createTransport({
+    service: process.env.SERVICE_PROVIDER,
+    auth: {
+        user: process.env.SENDER,
+        pass: process.env.PASSWORD
+    }
+});
+
+
 //@route GET api/profile/me
 //@access private
 router.get('/me', auth, async (req, res) => {
@@ -160,7 +170,20 @@ router.get('/user/:user_id', async (req, res) => {
 router.delete('/', auth, async (req, res) => {
     try {
         const user = await User.findById(req.user.id)
-        cancelEmail(user.email, user.name);
+        // cancelEmail(user.email, user.name);
+        const mailOptions = {
+            from: 'devconnecthkj@gmail.com', // sender address
+            to: user.email, // list of receivers
+            subject: 'Sorry about cancelling!', // Subject line
+            html: `<p>We are said that you are leaving our app, ${user.name}! Let me know the problems.</p>`, // plain text body
+            replyTo: 'devconnecthkj@gmail.com'
+        };
+        transporter.sendMail(mailOptions, function (err, info) {
+            if (err)
+                console.log(err)
+            else
+                console.log(info);
+        });
         //remove user posts
         await Post.deleteMany({
             user: req.user.id,
