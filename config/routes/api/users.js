@@ -18,8 +18,8 @@ var nodemailer = require('nodemailer');
 var transporter = nodemailer.createTransport({
     service: 'gmail', //process.env.SERVICE_PROVIDER,
     auth: {
-        user: 'devconnecthkj@gmail.com',
-        pass: process.env.PASSWORD
+        user: `${process.env.SENDER}`,
+        pass: `${process.env.PASSWORD}`
     }
 });
 
@@ -89,11 +89,11 @@ router.post(
             console.log(process.env.SENDER)
             // sendEmail(user.email, user.name);
             const mailOptions = {
-                from: 'devconnecthkj@gmail.com', // sender address
+                from: process.env.SENDER, // sender address
                 to: user.email, // list of receivers
                 subject: 'Thanks for joining in!', // Subject line
                 html: `<p>Welcome to the app, ${user.name}! Let me know how you get along with the app. </p>`, // plain text body
-                replyTo: 'devconnecthkj@gmail.com'
+                replyTo: process.env.SENDER
             };
             transporter.sendMail(mailOptions, function (err, info) {
                 if (err)
